@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>WebRTC server</title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<video id="serverVideo" playsinline autoplay muted></video>
+		<textarea id="mysdp" style="width:300px;height:300px;"></textarea>	
+		<!-- <textarea id="mycandidate" style="width:512px;height:512px;"></textarea>	 -->
+		<button id="start" onclick="start()">Start</button>
+		<button id="setRemoteDesc" onclick="setRemoteDescription()">setRemoteDesc</button>
+		<script>
+			// const signaling = new SignalingChannel();
+			const config = {iceServers: [{urls: 'stun:192.168.31.121:3478'}]}
+			const peer = new RTCPeerConnection(config);
+			peer.addEventListener('icecandidate', e => {
+				// document.getElementById("mycandidate").value(e.candidate)
+				// console.log(`Candidate Accept :\n${JSON.stringify(e.candidate.toJSON())}`);
+				if(e.candidate) {
+					console.log(`Candidate Accept :\n${JSON.stringify(e.candidate.toJSON())}`);
+				}
+			});
+			peer.addEventListener('iceconnectionstatechange', e => {
+				console.log(`ICE state: ${peer.iceConnectionState}`);
+				console.log('ICE state change event: ', e);
+			});
+
+			async function start() {
+				console.log('Requesting local stream');
+				try {
+					const stream = await navigator.mediaDevices.getUserMedia({audio: false, video: true});
+					console.log('Received local stream');
+					const localVideo = document.getElementById("serverVideo");
+					localVideo.srcObject = stream;
+					const localStream = stream;
+					localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+					console.log('Added local stream to pc1');
+				} catch (e) {
+					alert(`getUserMedia() error: ${e.name}`);
+				}
+			}
+
+			async function setRemoteDescription() {
+				const desc = JSON.parse(document.getElementById("mysdp").value);
+				console.log("Remote desc ==>>");
+				console.log(desc);
+
+				await peer.setRemoteDescription(desc);
+				console.log(`setRemoteDescription complete`);
+
+				const answer = await peer.createAnswer();
+				console.log(`Answer from pc2:\n${JSON.stringify(answer.toJSON())}`);
+
+				await peer.setLocalDescription(answer);
+				console.log("Local desc setting completed");
+				
+			}
+		</script>
+	</body>
+</html>

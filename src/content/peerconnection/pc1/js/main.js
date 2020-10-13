@@ -92,6 +92,9 @@ async function call() {
   const configuration = getSelectedSdpSemantics();
   console.log('RTCPeerConnection configuration:', configuration);
   pc1 = new RTCPeerConnection(configuration);
+  pc1.addTransceiver('video',{
+	  direction: 'recvonly'
+  })
   console.log('Created local peer connection object pc1');
   pc1.addEventListener('icecandidate', e => onIceCandidate(pc1, e));
   pc2 = new RTCPeerConnection(configuration);
@@ -99,9 +102,9 @@ async function call() {
   pc2.addEventListener('icecandidate', e => onIceCandidate(pc2, e));
   pc1.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc1, e));
   pc2.addEventListener('iceconnectionstatechange', e => onIceStateChange(pc2, e));
-  pc2.addEventListener('track', gotRemoteStream);
+  pc1.addEventListener('track', gotRemoteStream);
 
-  localStream.getTracks().forEach(track => pc1.addTrack(track, localStream));
+  localStream.getTracks().forEach(track => pc2.addTrack(track, localStream));
   console.log('Added local stream to pc1');
 
   try {
@@ -185,6 +188,7 @@ async function onCreateAnswerSuccess(desc) {
 }
 
 async function onIceCandidate(pc, event) {
+	// debugger;
   try {
     await (getOtherPc(pc).addIceCandidate(event.candidate));
     onAddIceCandidateSuccess(pc);
