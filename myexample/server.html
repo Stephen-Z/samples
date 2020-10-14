@@ -12,7 +12,17 @@
 		<button id="setRemoteDesc" onclick="setRemoteDescription()">setRemoteDesc</button>
 		<script>
 			// const signaling = new SignalingChannel();
-			const config = {iceServers: [{urls: 'stun:192.168.31.121:3478'}]}
+			// const config = {iceServers: [{urls: 'stun:192.168.31.121:3478'}]}
+			const config = {iceServers: [
+				// {
+				// 	urls:"stun:www.xswtech.net:33478"
+				// },
+				{
+					urls: 'turn:www.xswtech.net:33478',
+					username: "Bailistream",
+					credential: "Bladmin@123"
+				}
+			]}
 			const peer = new RTCPeerConnection(config);
 			peer.addEventListener('icecandidate', e => {
 				// document.getElementById("mycandidate").value(e.candidate)

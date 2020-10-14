@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>WebRTC server</title>
+		<title>WebRTC client</title>
 		<meta charset="utf-8">
 	</head>
 	<body>
@@ -13,7 +13,14 @@
 		<script>
 
 			// const peer = new RTCPeerConnection({});
-			const config = {iceServers: [{urls: 'stun:192.168.31.121:3478'}]}
+			// const config = {iceServers: [{urls: 'stun:192.168.31.121:3478'}]}
+			const config = {iceServers: [
+					{
+						urls: 'turn:www.xswtech.net:33478',
+						username: "Bailistream",
+      					credential: "Bladmin@123"
+					}
+				]}
 			const peer = new RTCPeerConnection(config);
 			peer.addTransceiver('video',{
 				direction: 'recvonly'
