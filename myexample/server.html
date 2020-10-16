@@ -35,6 +35,9 @@
 				console.log(`ICE state: ${peer.iceConnectionState}`);
 				console.log('ICE state change event: ', e);
 			});
+			peer.addEventListener('signalingstatechange', (e) => {
+				console.log('signalingstatechange ');
+			});
 
 			async function start() {
 				console.log('Requesting local stream');

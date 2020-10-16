@@ -40,6 +40,9 @@
 				localVideo.srcObject = e.streams[0];
 				console.log('pc2 received remote stream');
 			});
+			peer.addEventListener('signalingstatechange', (e) => {
+				console.log('signalingstatechange ');
+			});
 
 			async function start() {
 				const offerOptions = {
